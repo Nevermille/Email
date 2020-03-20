@@ -91,6 +91,34 @@ class Email
     const ERROR_FILE_IS_DIRECTORY = 4;
 
     /**
+     * @brief Remove all "To" addresses
+     * @return void
+     */
+    public function clearTo():void
+    {
+        $this->to = [];
+    }
+
+    /**
+     * @brief Returns the "To" addresses
+     * @return array The "To" addresses
+     */
+    public function getTo(): array
+    {
+        return $this->to;
+    }
+
+    /**
+     * @brief Add an adress to the "To" array
+     * @param EmailAddress $address The address
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    public function addTo(EmailAddress $address): int
+    {
+        return $this->addEmail($address, $this->to);
+    }
+
+    /**
      * @brief Returns the From address
      * @return EmailAddress The From address
      */
@@ -220,9 +248,9 @@ class Email
      * @param array $dest The destination array
      * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
      */
-    protected function addEmail(string $address, array &$dest): int
+    protected function addEmail(EmailAddress $address, array &$dest): int
     {
-        $res = $this->checkEmail($address);
+        $res = $this->checkEmail($address->getAddress());
 
         if ($res == self::NO_ERRORS) {
             $dest[] = $address;
