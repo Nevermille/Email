@@ -3,6 +3,7 @@
 use PHPUnit\Framework\ExpectationFailedException;
 use \Lianhua\Email\Email;
 use Lianhua\Email\EmailAddress;
+use PHPUnit\Framework\InvalidArgumentException;
 use \PHPUnit\Framework\TestCase;
 
 /*
@@ -94,6 +95,12 @@ class EmailTest extends TestCase
         $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
     }
 
+    /**
+     * Tests "To", "Cc" and "Bcc" addresses
+     * @return void
+     * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
+     */
     public function testOtherAddresses()
     {
         $email = new Email();
@@ -108,5 +115,33 @@ class EmailTest extends TestCase
         $this->assertCount(2, $email->getTo());
         $this->assertEquals("address1@lianhua.dev", $email->getTo()[0]->getAddress());
         $this->assertEquals("address3@lianhua.dev", $email->getTo()[1]->getAddress());
+        $email->clearTo();
+        $this->assertEmpty($email->getTo());
+
+        $this->assertEquals(Email::NO_ERRORS, $email->addCc(new EmailAddress("address4@lianhua.dev")));
+        $this->assertCount(1, $email->getCc());
+        $this->assertEquals("address4@lianhua.dev", $email->getCc()[0]->getAddress());
+        $this->assertEquals(Email::ERROR_EMAIL_FORMAT, $email->addCc(new EmailAddress("address5.lianhua.dev")));
+        $this->assertCount(1, $email->getCc());
+        $this->assertEquals("address4@lianhua.dev", $email->getCc()[0]->getAddress());
+        $this->assertEquals(Email::NO_ERRORS, $email->addCc(new EmailAddress("address6@lianhua.dev")));
+        $this->assertCount(2, $email->getCc());
+        $this->assertEquals("address4@lianhua.dev", $email->getCc()[0]->getAddress());
+        $this->assertEquals("address6@lianhua.dev", $email->getCc()[1]->getAddress());
+        $email->clearCc();
+        $this->assertEmpty($email->getCc());
+
+        $this->assertEquals(Email::NO_ERRORS, $email->addBcc(new EmailAddress("address7@lianhua.dev")));
+        $this->assertCount(1, $email->getBcc());
+        $this->assertEquals("address7@lianhua.dev", $email->getBcc()[0]->getAddress());
+        $this->assertEquals(Email::ERROR_EMAIL_FORMAT, $email->addBcc(new EmailAddress("address8.lianhua.dev")));
+        $this->assertCount(1, $email->getBcc());
+        $this->assertEquals("address7@lianhua.dev", $email->getBcc()[0]->getAddress());
+        $this->assertEquals(Email::NO_ERRORS, $email->addBcc(new EmailAddress("address9@lianhua.dev")));
+        $this->assertCount(2, $email->getBcc());
+        $this->assertEquals("address7@lianhua.dev", $email->getBcc()[0]->getAddress());
+        $this->assertEquals("address9@lianhua.dev", $email->getBcc()[1]->getAddress());
+        $email->clearBcc();
+        $this->assertEmpty($email->getBcc());
     }
 }

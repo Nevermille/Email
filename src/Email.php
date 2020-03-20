@@ -91,6 +91,62 @@ class Email
     const ERROR_FILE_IS_DIRECTORY = 4;
 
     /**
+     * @brief Remove all "Bcc" addresses
+     * @return void
+     */
+    public function clearBcc():void
+    {
+        $this->bcc = [];
+    }
+
+    /**
+     * @brief Returns the "Bcc" addresses
+     * @return array The "Bcc" addresses
+     */
+    public function getBcc(): array
+    {
+        return $this->bcc;
+    }
+
+    /**
+     * @brief Add an adress to the "Bcc" array
+     * @param EmailAddress $address The address
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    public function addBcc(EmailAddress $address): int
+    {
+        return $this->addEmail($address, $this->bcc);
+    }
+
+    /**
+     * @brief Remove all "Cc" addresses
+     * @return void
+     */
+    public function clearCc():void
+    {
+        $this->cc = [];
+    }
+
+    /**
+     * @brief Returns the "Cc" addresses
+     * @return array The "Cc" addresses
+     */
+    public function getCc(): array
+    {
+        return $this->cc;
+    }
+
+    /**
+     * @brief Add an adress to the "Cc" array
+     * @param EmailAddress $address The address
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    public function addCc(EmailAddress $address): int
+    {
+        return $this->addEmail($address, $this->cc);
+    }
+
+    /**
      * @brief Remove all "To" addresses
      * @return void
      */
