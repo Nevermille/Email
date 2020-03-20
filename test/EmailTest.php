@@ -1,5 +1,9 @@
 <?php namespace Lianhua\Email\Test;
 
+use PHPUnit\Framework\ExpectationFailedException;
+use \Lianhua\Email\Email;
+use \PHPUnit\Framework\TestCase;
+
 /*
 Email Library
 Copyright (C) 2020  Lianhua Studio
@@ -28,16 +32,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * @package Lianhua\Email\Test
  * @brief All tests for Email
  */
-class EmailTest extends \PHPUnit\Framework\TestCase
+class EmailTest extends TestCase
 {
-    public function testGettersAndSetters()
+    /**
+     * @brief Tests all basic setters and getters
+     * @return void
+     * @throws ExpectationFailedException
+     */
+    public function testSimpleGettersAndSetters()
     {
-        $email = new \Lianhua\Email\Email();
+        $email = new Email();
 
         $email->setMessage("Lorem Ipsum Sit Dolor Amet");
         $this->assertEquals("Lorem Ipsum Sit Dolor Amet", $email->getMessage());
 
         $email->setAlternateContent("Nullam vulputate sed ante nec blandit");
         $this->assertEquals("Nullam vulputate sed ante nec blandit", $email->getAlternateContent());
+    }
+
+    /**
+     * @brief Tests attachments system
+     * @return void
+     * @throws ExpectationFailedException
+     */
+    public function testAttachments()
+    {
+        $email = new Email();
+
+        $this->assertEquals(Email::NO_ERRORS, $email->addAttachement(__FILE__));
+        $this->assertEquals(Email::ERROR_FILE_NOT_FOUND, $email->addAttachement("faibaufiabfaue"));
+        $this->assertEquals(Email::ERROR_FILE_IS_DIRECTORY, $email->addAttachement(__DIR__));
+        $this->assertEquals([__FILE__], $email->getAttachments());
+
+        $email->clearAttachments();
+        $this->assertEmpty($email->getAttachments());
     }
 }

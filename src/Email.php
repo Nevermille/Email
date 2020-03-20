@@ -86,7 +86,50 @@ class Email
 
     const NO_ERRORS = 0;
     const ERROR_EMAIL_FORMAT = 1;
-    const ERROR_DNS_CHECK = 2;
+    const ERROR_EMAIL_DNS_CHECK = 2;
+    const ERROR_FILE_NOT_FOUND = 3;
+    const ERROR_FILE_IS_DIRECTORY = 4;
+
+    /**
+     * @brief Returns all attachments
+     * @return array The attachments
+     */
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @brief Remove all attachments
+     * @return void
+     */
+    public function clearAttachments(): void
+    {
+        $this->attachments = [];
+    }
+
+    /**
+     * @brief Add an attachement
+     * @param string $filepath The path of the fiche to attach
+     * @return int One of the error codes ERROR_FILE_* or NO_ERRORS
+     *
+     * This function checks if the file exists and if it's not a directory
+     */
+    public function addAttachement(string $filepath): int
+    {
+        // Check file existence
+        if (!file_exists($filepath)) {
+            return self::ERROR_FILE_NOT_FOUND;
+        }
+
+        // Check if it's really a file
+        if (is_dir($filepath)) {
+            return self::ERROR_FILE_IS_DIRECTORY;
+        }
+
+        $this->attachments[] = $filepath;
+        return self::NO_ERRORS;
+    }
 
     /**
      * @brief Returns the alternate content
@@ -130,7 +173,7 @@ class Email
      * @brief Add an email address to the array after format checking
      * @param string $email The email address to add
      * @param array $dest The destination array
-     * @return int One of error codes
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
      */
     protected function addEmail(string $email, array &$dest): int
     {
@@ -141,7 +184,7 @@ class Email
 
         // DNS check if needed
         if ($this->checkDns && !$this->checkAddressDns($email)) {
-            return self::ERROR_DNS_CHECK;
+            return self::ERROR_EMAIL_DNS_CHECK;
         }
 
         $dest[] = $email;
