@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\ExpectationFailedException;
 use \Lianhua\Email\Email;
+use Lianhua\Email\EmailAddress;
 use \PHPUnit\Framework\TestCase;
 
 /*
@@ -23,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * @file Email.php
+ * @file EmailTest.php
  * @author Camille Nevermind
  */
 
@@ -72,18 +73,18 @@ class EmailTest extends TestCase
     {
         $email = new Email();
 
-        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("test@google.com"));
-        $this->assertEquals("test@google.com", $email->getFrom());
-        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("test@google.con"));
-        $this->assertEquals("test@google.con", $email->getFrom());
-        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("Testuo Outset <test@google.com>"));
-        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
-        $this->assertEquals(Email::ERROR_EMAIL_FORMAT, $email->setFrom("Whaou!"));
-        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom(new EmailAddress("test@google.com")));
+        $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom(new EmailAddress("test@google.con")));
+        $this->assertEquals("test@google.con", $email->getFrom()->getAddress());
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom(new EmailAddress("test@google.com", "Testuo Outset")));
+        $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
+        $this->assertEquals(Email::ERROR_EMAIL_FORMAT, $email->setFrom(new EmailAddress("Whaou!")));
+        $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
 
         $email->setCheckDns(true);
 
-        $this->assertEquals(Email::ERROR_EMAIL_DNS_CHECK, $email->setFrom("test@google.con"));
-        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
+        $this->assertEquals(Email::ERROR_EMAIL_DNS_CHECK, $email->setFrom(new EmailAddress("test@google.con")));
+        $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
     }
 }

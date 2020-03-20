@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Email
 {
     /**
-     * @var string $from
+     * @var EmailAddress $from
      * @brief The from address
      */
     protected $from;
@@ -92,21 +92,21 @@ class Email
 
     /**
      * @brief Returns the From address
-     * @return string The From address
+     * @return EmailAddress The From address
      */
-    public function getFrom(): string
+    public function getFrom(): EmailAddress
     {
         return $this->from;
     }
 
     /**
      * @brief Sets the from address
-     * @param string $address The address
+     * @param EmailAddress $address The address
      * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
      */
-    public function setFrom(string $address): int
+    public function setFrom(EmailAddress $address): int
     {
-        $res = $this->checkEmail($address);
+        $res = $this->checkEmail($address->getAddress());
 
         if ($res == self::NO_ERRORS) {
             $this->from = $address;
@@ -233,23 +233,16 @@ class Email
 
     /**
      * @brief Check DNS record for address
-     * @param string $email The email address to check
+     * @param string $address The email address to check
      * @return bool True if correct, false otherwise
      */
-    protected function checkAddressDns(string $email): bool
+    protected function checkAddressDns(string $address): bool
     {
-        // We extract address between < and >
-        $exploded = explode("<", $email);
-        $extracted = $exploded[count($exploded) - 1];
-        $exploded = explode(">", $extracted);
-        $extracted = $exploded[0];
-
         // We extract the domain after the @
-        $domain = explode("@", $extracted);
+        $domain = explode("@", $address);
 
-        // Why idn_to_ascii: https://www.php.net/manual/fr/function.checkdnsrr.php#113537
         // Why a dot at the end of the domain: https://www.php.net/manual/fr/function.checkdnsrr.php#119969
-        return checkdnsrr(idn_to_ascii($domain . ".", IDNA_DEFAULT));
+        return checkdnsrr($domain . ".");
     }
 
     /**
