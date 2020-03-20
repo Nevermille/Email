@@ -84,11 +84,48 @@ class Email
      */
     protected $alternateContent;
 
+    /**
+     * @brief An array of custom headers
+     * @var array $headers
+     */
+    protected $headers;
+
     const NO_ERRORS = 0;
     const ERROR_EMAIL_FORMAT = 1;
     const ERROR_EMAIL_DNS_CHECK = 2;
     const ERROR_FILE_NOT_FOUND = 3;
     const ERROR_FILE_IS_DIRECTORY = 4;
+
+    /**
+     * @brief Remove all headers
+     * @return void
+     */
+    public function clearHeaders(): void
+    {
+        $this->headers = [];
+    }
+
+    /**
+     * @brief Returns the array of headers
+     * @return array The headers
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @brief Add a header to the mail
+     * @param string $name The name of the header
+     * @param string $value The value of the header
+     * @return void
+     *
+     * If the header already exists, it'll be overwritten
+     */
+    public function addHeader(string $name, string $value): void
+    {
+        $this->headers[$name] = $value;
+    }
 
     /**
      * @brief Remove all "Bcc" addresses
@@ -353,5 +390,6 @@ class Email
         $this->checkDns = false;
         $this->message = "";
         $this->alternateContent = "";
+        $this->headers = [];
     }
 }

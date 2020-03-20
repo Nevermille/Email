@@ -144,4 +144,27 @@ class EmailTest extends TestCase
         $email->clearBcc();
         $this->assertEmpty($email->getBcc());
     }
+
+    public function testHeaders()
+    {
+        $email = new Email();
+
+        $email->addHeader("X-CUSTOM-H1", "VAL1");
+        $email->addHeader("X-CUSTOM-H2", "VAL2");
+        $email->addHeader("X-CUSTOM-H3", "VAL3");
+
+        $headers = $email->getHeaders();
+
+        $this->assertCount(3, $headers);
+        $this->arrayHasKey("X-CUSTOM-H1", $headers);
+        $this->arrayHasKey("X-CUSTOM-H2", $headers);
+        $this->arrayHasKey("X-CUSTOM-H3", $headers);
+        $this->assertEquals("VAL1", $headers["X-CUSTOM-H1"]);
+        $this->assertEquals("VAL2", $headers["X-CUSTOM-H2"]);
+        $this->assertEquals("VAL3", $headers["X-CUSTOM-H3"]);
+
+        $email->clearHeaders();
+
+        $this->assertEmpty($email->getHeaders());
+    }
 }
