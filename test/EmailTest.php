@@ -61,9 +61,9 @@ class EmailTest extends TestCase
     {
         $email = new Email();
 
-        $this->assertEquals(Email::NO_ERRORS, $email->addAttachement(__FILE__));
-        $this->assertEquals(Email::ERROR_FILE_NOT_FOUND, $email->addAttachement("faibaufiabfaue"));
-        $this->assertEquals(Email::ERROR_FILE_IS_DIRECTORY, $email->addAttachement(__DIR__));
+        $this->assertEquals(Email::NO_ERRORS, $email->addAttachment(__FILE__));
+        $this->assertEquals(Email::ERROR_FILE_NOT_FOUND, $email->addAttachment("faibaufiabfaue"));
+        $this->assertEquals(Email::ERROR_FILE_IS_DIRECTORY, $email->addAttachment(__DIR__));
         $this->assertCount(1, $email->getAttachments());
         $this->assertEquals([__FILE__], $email->getAttachments());
 

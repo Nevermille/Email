@@ -261,7 +261,7 @@ class Email
      *
      * This function checks if the file exists and if it's not a directory
      */
-    public function addAttachement(string $filepath): int
+    public function addAttachment(string $filepath): int
     {
         // Check file existence
         if (!file_exists($filepath)) {
