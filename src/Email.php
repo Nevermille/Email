@@ -89,6 +89,25 @@ class Email
     const ERROR_DNS_CHECK = 2;
 
     /**
+     * @brief Returns the alternate content
+     * @return string The alternate content
+     */
+    public function getAlternateContent(): string
+    {
+        return $this->alternateContent;
+    }
+
+    /**
+     * @brief Sets the alternate content
+     * @param string $content The alternate content
+     * @return void
+     */
+    public function setAlternateContent(string $content): void
+    {
+        $this->alternateContent = $content;
+    }
+
+    /**
      * @brief Returns the message
      * @return string The message
      */

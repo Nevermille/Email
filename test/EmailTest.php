@@ -36,5 +36,8 @@ class EmailTest extends \PHPUnit\Framework\TestCase
 
         $email->setMessage("Lorem Ipsum Sit Dolor Amet");
         $this->assertEquals("Lorem Ipsum Sit Dolor Amet", $email->getMessage());
+
+        $email->setAlternateContent("Nullam vulputate sed ante nec blandit");
+        $this->assertEquals("Nullam vulputate sed ante nec blandit", $email->getAlternateContent());
     }
 }
