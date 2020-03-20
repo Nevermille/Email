@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * @class Email
  * @package Lianhua\Email
  * @brief A class containing all parameters for email
+ *
  * This class have everything needed to store an email data.
  * I personally recommend to extend this class with a send function
  * to make sendings easier.
@@ -77,28 +78,55 @@ class Email
 
     /**
      * @brief The alternate content
-     * @var string
+     * @var string $alternateContent
+     *
      * It's recommended to set one alternate message for disabled people
      */
     protected $alternateContent;
 
+    const NO_ERRORS = 0;
     const ERROR_EMAIL_FORMAT = 1;
     const ERROR_DNS_CHECK = 2;
+
+    /**
+     * @brief Returns the message
+     * @return string The message
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @brief Sets the message
+     * @param string $message The message
+     * @return void
+     */
+    public function setMessage(string $message): void
+    {
+        $this->message = $message;
+    }
 
     /**
      * @brief Add an email address to the array after format checking
      * @param string $email The email address to add
      * @param array $dest The destination array
-     * @return void
+     * @return int One of error codes
      */
-    protected function addEmail(string $email, array &$dest)
+    protected function addEmail(string $email, array &$dest): int
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $dest[] = $email;
-            return true;
-        } else {
-            return false;
+        // Format check
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return self::ERROR_EMAIL_FORMAT;
         }
+
+        // DNS check if needed
+        if ($this->checkDns && !$this->checkAddressDns($email)) {
+            return self::ERROR_DNS_CHECK;
+        }
+
+        $dest[] = $email;
+        return self::NO_ERRORS;
     }
 
     /**
@@ -106,7 +134,7 @@ class Email
      * @param string $email The email address to check
      * @return bool True if correct, false otherwise
      */
-    protected function checkDns(string $email)
+    protected function checkAddressDns(string $email): bool
     {
         // We extract address between < and >
         $exploded = explode("<", $email);
@@ -127,7 +155,7 @@ class Email
      * @param bool $val The parameter value
      * @return void
      */
-    public function setCheckDns(bool $val)
+    public function setCheckDns(bool $val): void
     {
         $this->checkDns = $val;
     }
