@@ -267,7 +267,7 @@ class Email
     protected function checkAddressDns(string $address): bool
     {
         // We extract the domain after the @
-        $domain = explode("@", $address);
+        $domain = explode("@", $address)[1];
 
         // Why a dot at the end of the domain: https://www.php.net/manual/fr/function.checkdnsrr.php#119969
         return checkdnsrr($domain . ".");
