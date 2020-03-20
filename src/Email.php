@@ -91,6 +91,31 @@ class Email
     const ERROR_FILE_IS_DIRECTORY = 4;
 
     /**
+     * @brief Returns the From address
+     * @return string The From address
+     */
+    public function getFrom(): string
+    {
+        return $this->from;
+    }
+
+    /**
+     * @brief Sets the from address
+     * @param string $address The address
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    public function setFrom(string $address): int
+    {
+        $res = $this->checkEmail($address);
+
+        if ($res == self::NO_ERRORS) {
+            $this->from = $address;
+        }
+
+        return $res;
+    }
+
+    /**
      * @brief Returns all attachments
      * @return array The attachments
      */
@@ -170,25 +195,40 @@ class Email
     }
 
     /**
-     * @brief Add an email address to the array after format checking
-     * @param string $email The email address to add
-     * @param array $dest The destination array
+     * @brief Check an email address
+     * @param string $address The email address to check
      * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
      */
-    protected function addEmail(string $email, array &$dest): int
+    protected function checkEmail(string $address): int
     {
         // Format check
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($address, FILTER_VALIDATE_EMAIL)) {
             return self::ERROR_EMAIL_FORMAT;
         }
 
         // DNS check if needed
-        if ($this->checkDns && !$this->checkAddressDns($email)) {
+        if ($this->checkDns && !$this->checkAddressDns($address)) {
             return self::ERROR_EMAIL_DNS_CHECK;
         }
 
-        $dest[] = $email;
         return self::NO_ERRORS;
+    }
+
+    /**
+     * @brief Add an email address to an array after checks
+     * @param string $address The email address to add
+     * @param array $dest The destination array
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    protected function addEmail(string $address, array &$dest): int
+    {
+        $res = $this->checkEmail($address);
+
+        if ($res == self::NO_ERRORS) {
+            $dest[] = $address;
+        }
+
+        return $res;
     }
 
     /**

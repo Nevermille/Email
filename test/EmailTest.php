@@ -67,4 +67,23 @@ class EmailTest extends TestCase
         $email->clearAttachments();
         $this->assertEmpty($email->getAttachments());
     }
+
+    public function testFromAddress()
+    {
+        $email = new Email();
+
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("test@google.com"));
+        $this->assertEquals("test@google.com", $email->getFrom());
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("test@google.con"));
+        $this->assertEquals("test@google.con", $email->getFrom());
+        $this->assertEquals(Email::NO_ERRORS, $email->setFrom("Testuo Outset <test@google.com>"));
+        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
+        $this->assertEquals(Email::ERROR_EMAIL_FORMAT, $email->setFrom("Whaou!"));
+        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
+
+        $email->setCheckDns(true);
+
+        $this->assertEquals(Email::ERROR_EMAIL_DNS_CHECK, $email->setFrom("test@google.con"));
+        $this->assertEquals("Testuo Outset <test@google.com>", $email->getFrom());
+    }
 }
