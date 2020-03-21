@@ -31,46 +31,50 @@ $email = new \Lianhua\Email\Email();
 
 ### Setting the message
 
-You can set a TXT or a HTML message with a method. You can also set a special message for disabled people.
+You can set a TXT or a HTML message with a method. You can also set a special message for disabled people. You also can set a subject.
 
 ```php
 // Set messages
 $email->setMessage("Welcome!");
 $email->setAlternateContent("Welcome, screen reader user");
+$email->setSubject("Welcome message");
 
 // Get messages
 $email->getMessage(); // "Welcome!"
 $email->getAlternateContent(); // "Welcome, screen reader user"
+$email->getSubject(); // "Welcome message"
 ```
 
 ### Addresses
 
 You can set the addresses with Email methods by providing an EmailAddress object.
 
-You can only have one "From" address but as many "To", "Cc" and "Bcc". The address format is checked before adding it.
+You can only have one "From" and "Reply" addresses and as many "To", "Cc" and "Bcc". The address format is checked before adding it.
 
 ```php
 $address = new \Lianhua\Email\EmailAddress("address@example.com", "Recipient Name");
 
 // Set addresses
 $email->setFrom($address);
+$email->setReply($address);
 $email->addTo($address);
 $email->addCc($address);
 $email->addBcc($address);
 
 // Get addresses
-$email->getFrom() // $address
-$email->getTo() // [$address]
-$email->getCc() // [$address]
-$email->getBcc() // [$address]
+$email->getFrom(); // $address
+$email->getReply(); // $address
+$email->getTo(); // [$address]
+$email->getCc(); // [$address]
+$email->getBcc(); // [$address]
 ```
 
 You can delete all addresses for "To", "Cc" and "Bcc" with the clear* functions
 
 ```php
-$email->clearTo()
-$email->clearCc()
-$email->clearBcc()
+$email->clearTo();
+$email->clearCc();
+$email->clearBcc();
 ```
 
 ### Attachements
@@ -99,7 +103,7 @@ $email->addHeader("X-HEADER", "WELCOME");
 $email->addHeader("X-HEADER-2", "BIENVENUE");
 
 // Get headers
-$email->getHeaders() // ["X-HEADER" => "WELCOME", "X-HEADER-2" => "BIENVENUE"]
+$email->getHeaders(); // ["X-HEADER" => "WELCOME", "X-HEADER-2" => "BIENVENUE"]
 
 // Delete headers
 $email->clearHeaders();
