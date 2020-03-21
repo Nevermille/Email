@@ -50,6 +50,9 @@ class EmailTest extends TestCase
 
         $email->setAlternateContent("Nullam vulputate sed ante nec blandit");
         $this->assertEquals("Nullam vulputate sed ante nec blandit", $email->getAlternateContent());
+
+        $email->setSubject("Quisque ac est laoreet, vehicula libero ac, venenatis diam.");
+        $this->assertEquals("Quisque ac est laoreet, vehicula libero ac, venenatis diam.", $email->getSubject());
     }
 
     /**
@@ -76,7 +79,7 @@ class EmailTest extends TestCase
      * @return void
      * @throws ExpectationFailedException
      */
-    public function testFromAddress()
+    public function testFromAndReplyAddresses()
     {
         $email = new Email();
 
@@ -93,6 +96,9 @@ class EmailTest extends TestCase
 
         $this->assertEquals(Email::ERROR_EMAIL_DNS_CHECK, $email->setFrom(new EmailAddress("test@google.con")));
         $this->assertEquals("test@google.com", $email->getFrom()->getAddress());
+
+        $this->assertEquals(Email::NO_ERRORS, $email->setReply(new EmailAddress("test2@google.com")));
+        $this->assertEquals("test2@google.com", $email->getReply()->getAddress());
     }
 
     /**
