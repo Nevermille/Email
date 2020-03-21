@@ -90,11 +90,42 @@ class Email
      */
     protected $headers;
 
+    /**
+     * @brief The subject of the email
+     * @var string $subject
+     */
+    protected $subject;
+
+    /**
+     * @brief The reply address of the email
+     * @var EmailAddress $reply
+     */
+    protected $reply;
+
     const NO_ERRORS = 0;
     const ERROR_EMAIL_FORMAT = 1;
     const ERROR_EMAIL_DNS_CHECK = 2;
     const ERROR_FILE_NOT_FOUND = 3;
     const ERROR_FILE_IS_DIRECTORY = 4;
+
+    /**
+     * @brief Returns the subject of the email
+     * @return string The subject of the email
+     */
+    public function getSubject(): string
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @brief Sets the subject of the email
+     * @param string $subject The subject
+     * @return void
+     */
+    public function setSubject(string $subject)
+    {
+        $this->subject = $subject;
+    }
 
     /**
      * @brief Remove all headers
@@ -212,6 +243,25 @@ class Email
     }
 
     /**
+     * @brief Returns the Reply address
+     * @return EmailAddress The Reply address
+     */
+    public function getReply(): EmailAddress
+    {
+        return $this->reply;
+    }
+
+    /**
+     * @brief Sets the from address
+     * @param EmailAddress $address The address
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    public function setReply(EmailAddress $address): int
+    {
+        return $this->setEmail($address, $this->reply);
+    }
+
+    /**
      * @brief Returns the From address
      * @return EmailAddress The From address
      */
@@ -227,13 +277,7 @@ class Email
      */
     public function setFrom(EmailAddress $address): int
     {
-        $res = $this->checkEmail($address->getAddress());
-
-        if ($res == self::NO_ERRORS) {
-            $this->from = $address;
-        }
-
-        return $res;
+        return $this->setEmail($address, $this->from);
     }
 
     /**
@@ -353,6 +397,23 @@ class Email
     }
 
     /**
+     * @brief Set an email address to a var after checks
+     * @param string $address The email address to add
+     * @param mixed $dest The destination array
+     * @return int One of error codes ERROR_EMAIL_* or NO_ERRORS
+     */
+    protected function setEmail(EmailAddress $address, &$dest): int
+    {
+        $res = $this->checkEmail($address->getAddress());
+
+        if ($res == self::NO_ERRORS) {
+            $dest = $address;
+        }
+
+        return $res;
+    }
+
+    /**
      * @brief Check DNS record for address
      * @param string $address The email address to check
      * @return bool True if correct, false otherwise
@@ -382,7 +443,7 @@ class Email
      */
     public function __construct()
     {
-        $this->from = "";
+        $this->from = null;
         $this->to = [];
         $this->cc = [];
         $this->bcc = [];
@@ -391,5 +452,7 @@ class Email
         $this->message = "";
         $this->alternateContent = "";
         $this->headers = [];
+        $this->subject = "";
+        $this->reply = null;
     }
 }
