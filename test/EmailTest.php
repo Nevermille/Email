@@ -55,6 +55,22 @@ class EmailTest extends TestCase
         $this->assertEquals("Quisque ac est laoreet, vehicula libero ac, venenatis diam.", $email->getSubject());
     }
 
+    public function testGettersAtCreation()
+    {
+        $email = new Email();
+
+        $this->assertNull($email->getFrom());
+        $this->assertNull($email->getReply());
+        $this->assertEmpty($email->getTo());
+        $this->assertEmpty($email->getCc());
+        $this->assertEmpty($email->getBcc());
+        $this->assertEmpty($email->getAttachments());
+        $this->assertEmpty($email->getMessage());
+        $this->assertEmpty($email->getAlternateContent());
+        $this->assertEmpty($email->getHeaders());
+        $this->assertEmpty($email->getSubject());
+    }
+
     /**
      * @brief Tests attachments system
      * @return void

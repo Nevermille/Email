@@ -244,9 +244,9 @@ class Email
 
     /**
      * @brief Returns the Reply address
-     * @return EmailAddress The Reply address
+     * @return EmailAddress|null The Reply address
      */
-    public function getReply(): EmailAddress
+    public function getReply(): ?EmailAddress
     {
         return $this->reply;
     }
@@ -263,9 +263,9 @@ class Email
 
     /**
      * @brief Returns the From address
-     * @return EmailAddress The From address
+     * @return EmailAddress|null The From address
      */
-    public function getFrom(): EmailAddress
+    public function getFrom(): ?EmailAddress
     {
         return $this->from;
     }
